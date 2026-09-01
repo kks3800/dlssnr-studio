@@ -1,0 +1,53 @@
+# Build output
+build/
+out/
+*.user
+.vs/
+.vscode/
+imgui.ini
+
+# Third-party dependencies -- fetched by scripts/fetch-deps.ps1, never
+# committed. ONNX Runtime alone is ~300 MB and the two models another ~160 MB.
+external/
+
+# NVIDIA runtime. Not ours to redistribute, and nvngx_dlssnr.dll is 158 MB,
+# over GitHub's 100 MB per-file limit regardless. Supply your own.
+*.dll
+
+# Runtime pieces fetched beside the executables by packaging/get-runtime.ps1.
+*.onnx
+
+# Test renders and scratch output
+scratch/
+*.png
+*.jpg
+*.jpeg
+!docs/*.png
+!docs/*.gif
+*.exr
+*.mp4
+*.m4a
+*.log
+nr_out/
+nr_mv/
+dlssnr-capture/
+
+# Packaged release output -- built by scripts/package.ps1 and published as a
+# GitHub release asset, never committed.
+dist/
+*.zip
+
+# Pipeline scratch and credentials
+pipeline/work/
+pipeline/out/
+pipeline/footage/
+pipeline/token.json
+pipeline/client_secrets.json
+pipeline/sources.toml
+__pycache__/
+*.pyc
+
+# OS noise
+Thumbs.db
+desktop.ini
+.DS_Store

@@ -1,0 +1,39 @@
+# Source manifest.
+#
+# One [[source]] block per clip. `rights` must be one of:
+#
+#   own-capture     footage you captured yourself
+#   licensed        written licence or press-kit terms permitting redistribution
+#   dev-supplied    the developer/publisher gave it to you for this
+#   public-domain   out of copyright
+#   cc              Creative Commons (attribution required)
+#
+# The pipeline refuses anything else. That is deliberate: it keeps footage you
+# have no right to republish out of the queue.
+
+[[source]]
+key         = "sky_capture"
+path        = "footage/sky_run_4k.mp4"
+title       = "Night City drive -- neural denoise pass"
+rights      = "own-capture"
+notes       = "Captured on my own machine, RTX 5090, 4K60 raw."
+tags        = ["dlss", "neural rendering", "denoise", "4k"]
+
+[[source]]
+key         = "indie_trailer"
+path        = "footage/indie_build_0142.mov"
+title       = "Nebula Drift -- enhanced trailer cut"
+rights      = "dev-supplied"
+attribution = "Footage courtesy of Nebula Drift Studios"
+source_url  = "https://example.com/press"
+notes       = "Enhanced under the terms of the 2026-08 press agreement."
+tags        = ["indie", "trailer", "upscale"]
+
+[[source]]
+key         = "archive_reel"
+path        = "footage/archive_1927.mkv"
+title       = "1927 city reel -- restored"
+rights      = "public-domain"
+attribution = "Prelinger Archives"
+source_url  = "https://archive.org/details/example"
+tags        = ["restoration", "archival", "ai upscale"]

@@ -1,0 +1,17 @@
+# Normalise line endings in the repository; check out native.
+* text=auto
+
+# Windows-only scripts keep CRLF so PowerShell 5.1 and cmd read them cleanly.
+*.ps1 text eol=crlf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Never touch binaries.
+*.png binary
+*.jpg binary
+*.gif binary
+*.exr binary
+*.onnx binary
+*.dll binary
+*.exe binary
+*.zip binary

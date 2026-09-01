@@ -1,0 +1,83 @@
+dlssnr-studio -- DLSS 5 Neural Rendering, outside a game
+
+STEP 1: FETCH THE RUNTIME (once, needs internet)
+------------------------------------------------
+This zip ships no DLLs. Right-click get-runtime.ps1 -> "Run with PowerShell",
+or from a terminal in this folder:
+
+    powershell -ExecutionPolicy Bypass -File get-runtime.ps1
+
+It downloads, beside the executables:
+
+    onnxruntime.dll                 ONNX Runtime (Microsoft)     needed to start
+    DirectML.dll                    DirectML (Microsoft)         needed to start
+    depth-anything-v2-small.onnx    depth estimation             optional, ~95 MB
+    raft.onnx                       optical flow for video       optional, ~62 MB
+
+Add -NoModels to skip the two model files.
+
+STEP 2: ADD THE ONE THING WE CANNOT GIVE YOU
+--------------------------------------------
+Copy  nvngx_dlssnr.dll  into THIS folder -- the same one holding
+dlssnr-studio.exe and dlssnr-image.exe. Not a subfolder.
+
+    dlssnr-studio\
+        dlssnr-studio.exe
+        dlssnr-image.exe
+        nvngx_dlssnr.dll      <- here
+        onnxruntime.dll
+        DirectML.dll
+        ...
+
+You do NOT need nvngx.dll -- that one is found automatically in your driver
+store. Only the feature runtime above is missing.
+
+The GUI only looks beside itself. The command-line tool can be pointed
+elsewhere with  --snippet <path>  if you prefer.
+
+It is not included: it is unreleased proprietary NVIDIA code and not ours to
+pass on.
+
+IT MUST MATCH YOUR GPU
+----------------------
+The DLL has to contain compiled kernels for your card's architecture. Check
+before you waste an evening:
+
+    python tools\fatbin_walk.py nvngx_dlssnr.dll
+
+  sm_75  = RTX 20      sm_86  = RTX 30
+  sm_89  = RTX 40      sm_120 = RTX 50
+
+If your architecture is not in that list, the DLL will not run on your card no
+matter what the download claimed.
+
+THEN
+----
+  dlssnr-studio.exe            interactive -- drop a file, folder or video on it
+  dlssnr-image.exe --help      command line
+
+WHICH SETTINGS ACTUALLY MATTER
+------------------------------
+All ranges are 0..2 except skin structure, which is -1..2. Default is 1.
+
+  local tone        the most useful control; responds across the whole
+                    range and keeps going up to 2
+  local structure   works, peaks around 1.5
+  style             three distinct looks; 2 is cleanest
+  intensity         linear 0 to 1 then clamps; 0 is an exact identity
+  skin structure    effectively on/off -- only 0 differs
+  preset            does nothing at any value
+
+Good starting point:  --style 2 --auto-mask 1 --local-tone 1.5
+
+Rendered a sequence out of Unreal? Point at the folder:
+  dlssnr-image.exe --sequence "D:\MyShot" --video out.mp4
+Depth and velocity passes are picked up automatically, EXR included.
+
+Have a video? Frames stream straight through (needs ffmpeg on PATH):
+  dlssnr-image.exe --video-in clip.mp4 -o out.mp4 --estimate-motion
+
+Expect ~1 s per pass at 1080p, ~3.5 s at 4K. Work at 1080p while you explore
+settings; it is four times cheaper.
+
+Full documentation: README.md

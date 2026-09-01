@@ -1,0 +1,64 @@
+# dlssnr pipeline configuration
+
+[paths]
+# Left blank => resolved relative to the repo (build/Release/dlssnr-image.exe).
+exe        = ""
+work_root  = "work"        # scratch: extracted + enhanced frames
+out_root   = "out"         # finished masters
+manifest   = "sources.toml"
+
+[extract]
+# PNG16 keeps the full range going into NR. "png8" is faster and smaller.
+format     = "png16"
+# 0 = use the source fps as probed.
+fps        = 0
+
+[enhance]
+# Sequence mode carries temporal history across frames; this is the setting
+# NR was designed for and the reason video does not flicker.
+estimate_motion = true     # RAFT flow -- captured footage has no velocity pass
+estimate_depth  = false    # measured inert: identical output, ~1.1 s/frame
+motion_res      = 512
+iterations      = 8
+# Any of these left unset stay at the runtime's own defaults.
+intensity       = ""
+style           = ""
+preset          = ""
+# Upscale target; 0 = keep source resolution.
+width           = 0
+height          = 0
+
+[watermark]
+# EU AI Act Art. 50 visible disclosure mark.
+enabled    = true
+text       = "AI"
+label      = ""            # optional word beside the badge, e.g. "AI-enhanced"
+position   = "bottom-right"  # bottom-right | bottom-left | bottom-center
+size_pct   = 5.0           # badge diameter as % of video height
+opacity    = 0.35
+margin_pct = 2.5           # margin as % of video height
+
+[encode]
+codec      = "h264"        # h264 | prores
+crf        = 16
+preset     = "slow"
+audio_kbps = 384
+faststart  = true
+
+[provenance]
+# Machine-readable marking. Real C2PA signing needs c2patool on PATH plus a
+# signing cert; without it we still write XMP/container metadata and a sidecar.
+enabled     = true
+c2pa        = false
+generator   = "dlssnr-studio (DLSS 5 Neural Rendering)"
+declaration = "AI-enhanced: denoised and upscaled with a neural renderer. Source footage is unmodified in content."
+
+[upload]
+enabled          = false   # opt in explicitly
+privacy          = "private"   # start private; flip after review
+category_id      = "20"        # Gaming
+made_for_kids    = false
+# YouTube's own synthetic-content disclosure. Independent of the AI Act mark.
+disclose_altered = true
+client_secrets   = "client_secrets.json"
+token_store      = "token.json"
